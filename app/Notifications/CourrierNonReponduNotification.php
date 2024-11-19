@@ -28,7 +28,7 @@ class CourrierNonReponduNotification extends Notification
         return [
             'letter_id' => $this->courrier->id,
             'titre' => 'Courrier non répondu #'.$this->courrier->expeditor,
-            'message' => 'Le courrier avec l\'objet << ' . $this->courrier->object . ' >> n\'a pas reçu de réponse dans les 48 heures. Direction concerné ('.$this->courrier->sigle.')',
+            'message' => 'Le courrier avec l\'objet << ' . $this->courrier->object . ' >> n\'a pas reçu de réponse dans les 72 heures. Direction concerné ('.$this->courrier->sigle.')',
         ];
     }
 

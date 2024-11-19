@@ -62,6 +62,25 @@
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label class="form-label col-xl-3 col-lg-3 col-form-label text-danger">Activer l'option "Agent courrier absent"</label>
+                                <div class="col-lg-9 col-xl-8">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="option" id="gridRadios1" value="0" checked>
+                                        <label class="form-label form-check-label" for="gridRadios1">
+                                            NON
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="option" id="gridRadios2" value="1">
+                                        <label class="form-label form-check-label" for="gridRadios2">
+                                            OUI
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Enregistrer</button>
                             <a href="{{ route('utilisateurs.index') }}" class="btn btn-danger ms-5">Retour</a>
                         </form>

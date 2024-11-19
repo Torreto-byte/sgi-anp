@@ -9,7 +9,7 @@
         <li class>
             <a href="{{ route('adminHomePage') }}" class="{{ request()->is('administration/dashboard') ? 'active' : '' }}">
                 <div class="nav_icon_small">
-                    <img src="{{asset('img/menu-icon/dashboard.svg')}}" alt>
+                    <i class="ti-home" style="font-size: 20px"></i>
                 </div>
                 <div class="nav_title">
                     <span>Accueil </span>
@@ -20,7 +20,7 @@
         <li class="{{ request()->routeIs('direction.*') ? 'mm-active' : '' }}">
             <a class="has-arrow" href="#" aria-expanded="{{ request()->routeIs('direction.*') ? 'true' : 'false' }}">
                 <div class="nav_icon_small">
-                    <img src="{{asset('img/menu-icon/6.svg')}}" alt>
+                    <i class="ti-briefcase" style="font-size: 20px"></i>
                 </div>
                 <div class="nav_title">
                     <span>Gestion des Directions </span>
@@ -39,7 +39,7 @@
         <li class="{{ request()->routeIs('courriers-arrives.*', 'chrono-arrive.*', 'type-instruction.*') || request()->is('courriers-arrives/imputation*') ? 'mm-active' : '' }}">
             <a class="has-arrow" href="#" aria-expanded="false">
                 <div class="nav_icon_small">
-                    <img src="{{ asset('img/menu-icon/8.svg') }}" alt>
+                    <i class="ti-import" style="font-size: 20px"></i>
                 </div>
                 <div class="nav_title">
                     <span>Courriers Arrivés</span>
@@ -53,35 +53,61 @@
             </ul>
         </li>
 
-        <li class="{{ request()->is('chrono-depart.*') ? 'mm-active' : '' }}">
+        <li class="{{ request()->routeIs('courriers-departs.*', 'chrono-depart.*') ? 'mm-active' : '' }}">
             <a class="has-arrow" href="#" aria-expanded="false">
                 <div class="nav_icon_small">
-                    <img src="{{ asset('img/menu-icon/7.svg') }}" alt>
+                    <i class="ti-export" style="font-size: 20px"></i>
                 </div>
                 <div class="nav_title">
                     <span>Courriers Départs</span>
                 </div>
             </a>
-            <ul class="{{ request()->is('chrono-depart.*') ? 'mm-collapse mm-show' : '' }}">
-                <li><a href="{{ route('chrono-depart.index') }}">Chrono</a></li>
-                <li><a href="#">Nouveau courrier</a></li>
-                <li><a href="#">Afficher</a></li>
+            <ul class="{{ request()->routeIs('courriers-departs.*', 'chrono-depart.*') ? 'mm-collapse mm-show' : '' }}">
+                <li><a href="{{ route('chrono-depart.index') }}" class="{{ request()->routeIs('chrono-depart.*') ? 'active' : '' }}">Chrono</a></li>
+                <li><a href="{{ route('courriers-departs.create') }}" class="{{ request()->routeIs('courriers-departs.create') ? 'active' : '' }}">Nouveau courrier</a></li>
+                <li><a href="{{ route('courriers-departs.index') }}" class="{{ request()->routeIs('courriers-departs.index') ? 'active' : '' }}">Afficher</a></li>
             </ul>
         </li>
 
-        <li class="{{ request()->routeIs('utilisateurs.*') ? 'mm-active' : '' }}">
+        <li class="{{ request()->is('archives/courriers-arrives')
+            || request()->is('archives/courriers-arrives/details*')
+            || request()->is('archives/courriers-departs')
+            || request()->is('archives/courriers-departs/details*') ? 'mm-active' : '' }}"
+        >
             <a class="has-arrow" href="#" aria-expanded="false">
                 <div class="nav_icon_small">
-                    <img src="{{ asset('img/menu-icon/5.svg') }}" alt>
+                    <i class="ti-archive" style="font-size: 20px"></i>
+                </div>
+                <div class="nav_title">
+                    <span>Archives</span>
+                </div>
+            </a>
+            <ul class="{{ request()->is('archives/courriers-arrives')
+            || request()->is('archives/courriers-arrives/details*') || request()->is('archives/courriers-departs') ? 'mm-collapse mm-show' : 'mm-collapse' }}">
+                <li>
+                    <a href="{{ route('archiveArrive') }}" class="{{ request()->is('archives/courriers-arrives')
+                    || request()->is('archives/courriers-arrives/details*') ? 'active' : '' }}">Courriers Arrivés</a>
+                </li>
+                <li>
+                    <a href="{{ route('archiveDepart') }}"  class="{{ request()->is('archives/courriers-departs')
+                    || request()->is('archives/courriers-departs/details*') ? 'active' : '' }}">Courriers départs</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="{{ request()->routeIs('utilisateurs.*') || request()->is('administration/utilisateurs/historiques') ? 'mm-active' : '' }}">
+            <a class="has-arrow" href="#" aria-expanded="false">
+                <div class="nav_icon_small">
+                    <i class="ti-user" style="font-size: 20px"></i>
                 </div>
                 <div class="nav_title">
                     <span>Gestion des utilisateurs</span>
                 </div>
             </a>
-            <ul class="{{ request()->routeIs('utilisateurs.*') ? 'mm-collapse mm-show' : 'mm-collapse' }}">
+            <ul class="{{ request()->routeIs('utilisateurs.*') || request()->is('administration/utilisateurs/historiques') ? 'mm-collapse mm-show' : 'mm-collapse' }}">
                 <li><a href="{{ route('utilisateurs.create') }}" class="{{ request()->routeIs('utilisateurs.create') ? 'active' : '' }}">Ajouter</a></li>
                 <li><a href="{{ route('utilisateurs.index') }}" class="{{ request()->routeIs('utilisateurs.index') ? 'active' : '' }}">Afficher</a></li>
-                <li><a href="add_new_user.html">Historique</a></li>
+                <li><a href="{{ route('historyUtulisateur') }}" class="{{ request()->is('administration/utilisateurs/historiques') ? 'active' : '' }}">Historique</a></li>
             </ul>
         </li>
 

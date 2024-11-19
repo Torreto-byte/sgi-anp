@@ -32,7 +32,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label text-bold fs-5 text-red-600" for="inputEmail4">Numéro du chrono</label>
-                                    <input type="text" name="numero" class="form-control @error('numero') is-invalid @enderror" id="inputEmail4" placeholder="Exemple:. 002 ">
+                                    <input type="text" name="numero" value="{{old('numero') ?? ''}}" class="form-control @error('numero') is-invalid @enderror" id="inputEmail4" placeholder="Exemple:. 002 ">
                                     @error('numero')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
@@ -41,7 +41,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label" for="inputEmail4">Numéro de début</label>
-                                    <input type="text" name="debut" class="form-control @error('debut') is-invalid @enderror" id="inputEmail4">
+                                    <input type="text" name="debut" value="{{old('debut') ?? ''}}" class="form-control @error('debut') is-invalid @enderror" id="inputEmail4">
                                     @error('debut')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror

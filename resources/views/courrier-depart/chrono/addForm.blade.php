@@ -46,13 +46,13 @@
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class=" col-md-6">
+                                {{-- <div class=" col-md-6">
                                     <label class="form-label" for="inputPassword4">Fin</label>
                                     <input type="text" name="fin" class="form-control @error('fin') is-invalid @enderror" id="inputPassword4">
                                     @error('fin')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div> --}}
                             </div>
 
                             <button type="submit" class="btn btn-primary">Ouvrir</button>

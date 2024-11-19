@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ChronoIn;
 use App\Models\LettersIn;
+use App\Models\Imputation;
+use App\Models\UserHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,11 +24,13 @@ class LettersInController extends Controller
     */
     public function index()
     {
-        $items = DB::table('letters_ins')
-                ->join('chrono_ins', 'chrono_ins.id', '=', 'letters_ins.chrono_id')
-                ->select('letters_ins.*', 'chrono_ins.numero')
-                //->where('status', 'public')
-                ->get();
+        $items  = DB::table('imputations')
+                    ->join('letters_ins', 'letters_ins.id', '=', 'imputations.letter_id')
+                    ->join('chrono_ins', 'chrono_ins.id', '=', 'letters_ins.chrono_id')
+                    ->leftJoin('directions', 'directions.id', '=', 'imputations.direction_id')
+                    ->select('letters_ins.*', 'chrono_ins.numero', 'directions.sigle')
+                    ->whereNull('delete_at')
+                    ->get();
 
         return view('courrier-arrive.courrier.listing', compact('items'));
     }
@@ -66,13 +74,24 @@ class LettersInController extends Controller
             return back()->withErrors($validate)->withInput();
         }
 
+        // récupérer le numéro du chrono
+        $numeroChrono = ChronoIn::where('id', $request->chrono)->get();
+
         $file = $request->file('fichier');
+
+        $folderPath = "courriers-arrive/".$numeroChrono[0]->numero;
+
+        // Vérifier si le dossier existe, sinon le créer
+        if (!Storage::disk('public')->exists($folderPath)) {
+            Storage::disk('public')->makeDirectory($folderPath);
+        }
 
         $fileName = $request->objet.'-'.$request->expediteur.'_du_'.$request->date.'.'.$file->extension();
 
         $newData = new LettersIn();
 
-        $newData->files                     = $file->storeAs('courriers-arrive', $fileName, 'public');
+        $newData->files                     = $file->storeAs($folderPath, $fileName, 'public');
+        $newData->attachment                = $request->pj;
         $newData->date_add                  = $request->date;
         $newData->date_number_correspond    = $request->date_correspond;
         $newData->expeditor                 = $request->expediteur;
@@ -80,16 +99,20 @@ class LettersInController extends Controller
         $newData->number                    = $request->numero;
         $newData->status                    = $request->statut;
         $newData->chrono_id                 = $request->chrono;
-        //$newData->user_id
+        $newData->user_id                   = Auth::user()->id;
 
         if ($newData->save()) {
 
+            Imputation::create([
+                'letter_id' => $newData->id
+            ]);
+
             /********* Historique utilisateur *********/
-            // History::create([
-            //     'names' => Session::get('names'),
-            //     'operations' => 'Enregistrement Production ==> '.$request->libele,
-            //     'users_id' => Session::get('users_id'),
-            // ]);
+            UserHistory::create([
+                'names' => Session::get('names'),
+                'operations' => 'Enregistrement courrier arrivé N° ==> '.$request->numero,
+                'user_id' => Session::get('user_id'),
+            ]);
 
             notify()->success('Enregistrement effectué avec succès !');
             return redirect()->route('courriers-arrives.index');
@@ -107,7 +130,8 @@ class LettersInController extends Controller
     {
         $item = DB::table('letters_ins')
                 ->join('chrono_ins', 'chrono_ins.id', '=', 'letters_ins.chrono_id')
-                ->select('letters_ins.*', 'chrono_ins.numero')
+                ->join('users', 'users.id', '=', 'letters_ins.user_id')
+                ->select('letters_ins.*', 'chrono_ins.numero', 'users.full_name')
                 ->where('letters_ins.id', $id)
                 ->first();
 
@@ -181,15 +205,27 @@ class LettersInController extends Controller
 
         } else {
 
+            $singleData = LettersIn::findOrFail($id);
+
+            // récupérer le numéro du chrono
+            $numeroChrono = ChronoIn::where('id', $request->chrono)->get();
+
+            $folderPath = "courriers-arrive/".$numeroChrono[0]->numero;
+
+            // Vérifier si le dossier existe, sinon le créer
+            if (!Storage::disk('public')->exists($folderPath)) {
+                Storage::disk('public')->makeDirectory($folderPath);
+            }
+
+            if ($singleData->files && Storage::disk('public')->exists($singleData->files)) {
+                Storage::disk('public')->delete($singleData->files);
+            }
+
             $file = $request->file('fichier');
 
             $fileName = $request->objet.'-'.$request->expediteur.'_du_'.$request->date.'.'.$file->extension();
 
-            $singleData = LettersIn::findOrFail($id);
-
-            Storage::disk('public')->delete($singleData->files);
-
-            $singleData->files                     = $file->storeAs('courriers-arrive', $fileName, 'public');
+            $singleData->files                     = $file->storeAs($folderPath, $fileName, 'public');
             $singleData->date_add                  = $request->date;
             $singleData->date_number_correspond    = $request->date_correspond;
             $singleData->expeditor                 = $request->expediteur;
@@ -203,13 +239,13 @@ class LettersInController extends Controller
         $singleData->save();
 
         /********* Historique utilisateur *********/
-        // History::create([
-        //     'names' => Session::get('names'),
-        //     'operations' => 'Enregistrement Production ==> '.$request->libele,
-        //     'users_id' => Session::get('users_id'),
-        // ]);
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Modification courrier arrivé N° ==> '.$request->numero,
+            'user_id' => Session::get('user_id'),
+        ]);
 
-        notify()->success('Enregistrement effectué avec succès !');
+        notify()->success('Modification effectuée avec succès !');
         return redirect()->route('courriers-arrives.index');
 
     }
@@ -223,13 +259,24 @@ class LettersInController extends Controller
     */
     public function destroy($id)
     {
-        $deletedFile = LettersIn::findOrFail($id);
+        // $deletedFile = LettersIn::findOrFail($id);
 
-        Storage::disk('public')->delete($deletedFile->files);
+        // Storage::disk('public')->delete($deletedFile->files);
 
-        DB::table('imputations')->where('letter_id', $id)->delete();
+        // DB::table('imputations')->where('letter_id', $id)->delete();
 
-        $deletedFile->delete();
+        DB::table('letters_ins')
+            ->where('id', $id)
+            ->update(['delete_at' => Carbon::now()]);
+
+        /********* Historique utilisateur *********/
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Mise en corbeille courrier arrivé N° ==> '.$id,
+            'user_id' => Session::get('user_id'),
+        ]);
+
+        //$deletedFile->delete();
 
         notify()->success('Suppression effectuée avec succès !');
         return redirect()->route('courriers-arrives.index');
@@ -276,14 +323,24 @@ class LettersInController extends Controller
             return back()->withErrors($validate)->withInput();
         }
 
-        DB::table('imputations')->insert([
-            'letter_id' => $request->courrierID,
+        $getData = DB::table('letters_ins')->where('id', $request->courrierID)->get();
+
+        DB::table('imputations')
+        ->where('letter_id', $request->courrierID)
+        ->update([
             'direction_id' => $request->direction
         ]);
 
         DB::table('letters_ins')
             ->where('id', $request->courrierID)
             ->update(['code_instruction' => $request->instruction]);
+
+        /********* Historique utilisateur *********/
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Imputation courrier arrivé ID ==> '.$getData[0]->number,
+            'user_id' => Session::get('user_id'),
+        ]);
 
         notify()->success('Imputation effectuée avec succès !');
         return redirect()->route('courriers-arrives.index');
@@ -340,6 +397,8 @@ class LettersInController extends Controller
             'instruction'   => 'required'
         ]);
 
+        $getData = DB::table('letters_ins')->where('id', $id)->get();
+
         if ($validate->fails()){
             notify()->error('Tous les champs sont obligatoire');
             return back()->withErrors($validate)->withInput();
@@ -352,6 +411,13 @@ class LettersInController extends Controller
         DB::table('letters_ins')
             ->where('id', $id)
             ->update(['code_instruction' => $request->instruction]);
+
+        /********* Historique utilisateur *********/
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Modification imputation courrier arrivé ID ==> '.$getData[0]->number,
+            'user_id' => Session::get('user_id'),
+        ]);
 
         notify()->success('Imputation modifié avec succès !');
         return redirect()->route('courriers-arrives.index');
@@ -396,18 +462,61 @@ class LettersInController extends Controller
             return back()->withErrors($validate)->withInput();
         }
 
+        $getData = DB::table('letters_ins')->where('id', $id)->get();
+
         DB::table('imputations')
             ->where('letter_id', $id)
             ->update([
                 'date_reception' => $request->date_reception,
                 'name_agent'     => $request->nom_agent
-            ]);
+        ]);
 
-        DB::table('letters_ins')
+        if($request->code == 'classer')
+        {
+            DB::table('letters_ins')
             ->where('id', $id)
             ->update([
                 'etat' => 'close'
             ]);
+        }
+
+        /********* Historique utilisateur *********/
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Décharge courrier arrivé ID ==> '.$getData[0]->number,
+            'user_id' => Session::get('user_id'),
+        ]);
+
+        notify()->success('Décharge éffectuée avec succès !');
+        return redirect()->route('courriers-arrives.index');
+    }
+
+
+    /***
+     *
+     * Classer courrier
+     *
+     */
+    public function classerLetter($id)
+    {
+        if($id)
+        {
+            DB::table('letters_ins')
+            ->where('id', $id)
+            ->update([
+                'code_instruction' => 'classer',
+                'etat' => 'close'
+            ]);
+
+            $getData = DB::table('letters_ins')->where('id', $id)->get();
+
+            /********* Historique utilisateur *********/
+            UserHistory::create([
+                'names' => Session::get('names'),
+                'operations' => 'Classification courrier arrivé ID ==> '.$getData[0]->number,
+                'user_id' => Session::get('user_id'),
+            ]);
+        }
 
         notify()->success('Décharge éffectuée avec succès !');
         return redirect()->route('courriers-arrives.index');

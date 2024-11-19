@@ -25,7 +25,7 @@
 
         <div class="row">
 
-            <div class="col-lg-5">
+            <div class="col-md-4">
                 <div class="white_card">
                     <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Courrier PDF</h4></div>
                     <div class="card-body">
@@ -45,11 +45,13 @@
 
             </div>
 
-            <div class="col-lg-3">
+            <div class="col-md-4">
                 <div class="white_card">
                     <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Information sur le courrier</h4></div>
 
                     <input type="text" name="courrierID" value="{{ $singleData->id }}" hidden />
+
+                    <input type="text" name="code" value="{{ $singleData->code_instruction }}" hidden />
 
                     <div class="card-body">
                         <div class="row mb-3">
@@ -71,7 +73,7 @@
 
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-md-4">
                 <div class="white_card">
                     <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Imputation</h4></div>
 

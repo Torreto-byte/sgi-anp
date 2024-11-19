@@ -23,29 +23,13 @@
                     <div class="QA_section">
                         <div class="white_box_tittle list_header">
                             <h4>Liste des direction</h4>
-                            <div class="box_right d-flex lms_block">
-                                <div class="serach_field_2">
-                                    <div class="search_inner">
-                                        <form Active="#">
-                                            <div class="search_field">
-                                                <input type="text" placeholder="Rechercher dans cette liste">
-                                            </div>
-                                            <button type="submit"> <i class="ti-search"></i> </button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="add_button ms-2">
-                                    <a href="#" data-toggle="modal" data-target="#addcategory" class="btn_1">rechercher</a>
-                                </div>
-                            </div>
                         </div>
                         <div class="QA_table mb_30">
 
-                            <table class="table">
+                            <table class="table" id="order-listing">
                                 <thead>
                                     <tr>
                                         <th scope="col">#ID</th>
-                                        <th scope="col">TITRE</th>
                                         <th scope="col">SIGLE</th>
                                         <th scope="col">ACTIONS</th>
                                     </tr>
@@ -56,7 +40,6 @@
                                         @foreach ( $items as $item )
                                             <tr>
                                                 <td>#{{ $item->id }} </td>
-                                                <td>{{ $item->name }}</td>
                                                 <td>{{ $item->sigle }}</td>
                                                 <td>
                                                     <div class="action_btns d-flex">

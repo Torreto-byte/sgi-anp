@@ -17,7 +17,7 @@ class UsersController extends Controller
 
     protected function pass($length)
     {
-        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@$-&";
+        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@-";
         return substr(str_shuffle(str_repeat($chars, $length)),0,$length);
     }
 
@@ -29,8 +29,6 @@ class UsersController extends Controller
                 ->join('roles', 'users.role_id', '=', 'roles.id')
                 ->select('users.*', 'roles.name')
                 ->get();
-
-        //dd($items);
 
         return view('user.listing', compact('items'));
     }
@@ -139,6 +137,7 @@ class UsersController extends Controller
         $singleDataUpdate->full_name = $request->noms;
         $singleDataUpdate->username = $request->username;
         $singleDataUpdate->role_id = $request->role;
+        $singleDataUpdate->letter_option = $request->option;
 
         if ($singleDataUpdate->save()) {
 
@@ -225,6 +224,14 @@ class UsersController extends Controller
     }
 
 
+    public function userHistories()
+    {
+        $items = UserHistory::all();
+
+        return view('user.history', compact('items'));
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -246,4 +253,5 @@ class UsersController extends Controller
         notify()->success('Suppression effectuée avec succès !');
         return redirect()->route('utilisateurs.index');
     }
+
 }

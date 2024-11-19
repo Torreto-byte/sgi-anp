@@ -10,6 +10,7 @@ class LettersIn extends Model
     use HasFactory;
 
     protected $fillable = [
+        'files',
         'date_add',
         'date_number_correspond',
         'expeditor',

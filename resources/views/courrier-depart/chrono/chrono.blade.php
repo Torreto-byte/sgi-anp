@@ -41,12 +41,12 @@
                         </div>
                         <div class="QA_table mb_30">
 
-                            <table class="table lms_table_active ">
+                            <table class="table"> {{-- lms_table_active --}}
                                 <thead>
                                     <tr>
                                         <th scope="col">NUMERO DU CHRONO</th>
                                         <th scope="col">NUMERO DEBUT</th>
-                                        {{-- <th scope="col">NUMERO FIN</th> --}}
+                                        <th scope="col">NUMERO FIN</th>
                                         <th scope="col">STATUT</th>
                                         <th scope="col">ACTIONS</th>
                                     </tr>
@@ -56,19 +56,28 @@
 
                                         @foreach ( $items as $item )
                                             <tr>
-                                                <td>{{ $item->numero }}</td>
+                                                <td class="text-danger" style="font-size: 155%">N° {{ $item->numero }}</td>
                                                 <td>{{ $item->num_debut }}</td>
-                                                {{-- <td>{{ $item->num_fin }}</td> --}}
+                                                @if ($item->num_fin == null)
+                                                    <td><a href="#" class="status_btn bg-dark">Non défini</a></td>
+                                                @else
+                                                    <td>{{ $item->num_fin }}</td>
+                                                @endif
                                                 @if ($item->statut == 1)
                                                     <td><a href="#" class="status_btn">OUVERT</a></td>
                                                 @else
-                                                    <td><a href="#" class="status_btn">FERMER</a></td>
+                                                    <td><a href="#" class="status_btn bg-danger">FERMER</a></td>
                                                 @endif
                                                 <td>
                                                     <div class="action_btns d-flex">
-                                                        <a href="{{ route('chrono-depart.edit', $item->id) }}" class="action_btn mr_10" title="MODIFIER" style="padding-top: 8px;"> <i class="far fa-edit"></i> </a>
-                                                        <button type="submit" class="action_btn" title="SUPPRIMER" data-bs-toggle="modal" data-bs-target="#exampleModalLong{{ $item->id }}">
-                                                            <i class="fas fa-trash"></i>
+                                                        @if ($item->num_fin == null)
+                                                            <a href="{{ route('chrono-depart.edit', $item->id) }}" class="btn btn-danger rounded-pill mb-3 f_s_13 me-3" title="FERMER LE CHRONO" style="padding-top: 8px;">
+                                                                <i class="ti-lock f_s_14 me-2"></i> Fermer
+                                                            </a>
+                                                        @endif
+
+                                                        <button type="submit" title="SUPPRIMER" class="btn btn-outline-danger rounded-pill mb-3 f_s_13" data-bs-toggle="modal" data-bs-target="#exampleModalLong{{ $item->id }}">
+                                                            <i class="ti-trash f_s_14 me-2"></i>Supprimer
                                                         </button>
                                                     </div>
                                                 </td>

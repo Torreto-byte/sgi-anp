@@ -1746,7 +1746,9 @@ p a:hover {
 
 .page-item.active .page-link {
     background-color: #399f67;
-    border-color: #399f67
+    border-color: #399f67;
+    color: #000;
+    border: 3px;
 }
 
 .page-item.active .page-link:hover {
@@ -4528,7 +4530,7 @@ body::-webkit-scrollbar {
 }
 
 .min_height_oveflow {
-    height: 370px;
+    height: 770px;
     overflow-x: hidden;
     overflow-y: auto
 }
@@ -6884,7 +6886,7 @@ canvas#highlights {
 }
 
 .dataTables_paginate a {
-    width: 32px;
+    width: 82px;
     height: 32px;
     background: #fff !important;
     border-radius: 3px !important;
@@ -9883,7 +9885,7 @@ a.pswp__share--download:hover {
 }
 
 .Menu_NOtification_Wrap .Notification_body {
-    padding: 20px;
+    /* padding: 20px; */
     height: 300px;
     overflow: auto
 }
@@ -9904,7 +9906,7 @@ a.pswp__share--download:hover {
     width: 180px;
     height: 50px;
     border-radius: 5px;
-    margin-top: -85px;
+    margin-top: -58px;
 }
 
 .Menu_NOtification_Wrap .Notification_body .single_notify .notify_content a h5 {

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\ChronoOut;
+use App\Models\UserHistory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class ChronoOutController extends Controller
@@ -16,7 +19,7 @@ class ChronoOutController extends Controller
      */
     public function index()
     {
-        $items = ChronoOut::all();
+        $items = DB::table('chrono_outs')->orderByDesc('id')->get();
 
         return view('courrier-depart.chrono.chrono', compact('items'));
     }
@@ -42,8 +45,7 @@ class ChronoOutController extends Controller
 
         $validate =  Validator::make($request->all(), [
             'numero' => 'required',
-            'debut' => 'required',
-            'fin'
+            'debut' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -53,34 +55,22 @@ class ChronoOutController extends Controller
 
         $newData = new ChronoOut();
 
-        $newData->numero        = $request->numero;
+        $newData->numero        = $request->numero.'-'.date('Y');
         $newData->num_debut     = $request->debut;
-        $newData->num_fin       = $request->fin;
 
         if ($newData->save()) {
 
-            /********* Historique utilisateur *********/
-            // History::create([
-            //     'names' => Session::get('names'),
-            //     'operations' => 'Enregistrement Production ==> '.$request->libele,
-            //     'users_id' => Session::get('users_id'),
-            // ]);
+            UserHistory::create([
+                'names' => Session::get('names'),
+                'operations' => 'Création du chrono départ N° ==> '.$request->numero.'-'.date('Y'),
+                'user_id' => Session::get('user_id'),
+            ]);
 
             notify()->success('Enregistrement effectué avec succès !');
             return redirect()->route('chrono-depart.index');
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -106,7 +96,7 @@ class ChronoOutController extends Controller
     {
         $validate =  Validator::make($request->all(), [
             'numero' => 'required',
-            'debut' => 'required'
+            'fin' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -116,17 +106,16 @@ class ChronoOutController extends Controller
 
         $singleData = ChronoOut::findOrFail($id);
 
-        $singleData->numero        = $request->numero;
-        $singleData->num_debut     = $request->debut;
+        $singleData->num_fin    = $request->fin;
+        $singleData->statut     = 0;
 
         if ($singleData->save()) {
 
-            /********* Historique utilisateur *********/
-            // History::create([
-            //     'names' => Session::get('names'),
-            //     'operations' => 'Enregistrement Production ==> '.$request->libele,
-            //     'users_id' => Session::get('users_id'),
-            // ]);
+            UserHistory::create([
+                'names' => Session::get('names'),
+                'operations' => 'Fermeture du chrono départ N° ==> '.$request->numero.'-'.date('Y'),
+                'user_id' => Session::get('user_id'),
+            ]);
 
             notify()->success('Modification effectuée avec succès !');
             return redirect()->route('chrono-depart.index');
@@ -142,6 +131,12 @@ class ChronoOutController extends Controller
     public function destroy($id)
     {
         ChronoOut::destroy($id);
+
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Suppression du chrono arrivé ID° ==> '.$id,
+            'user_id' => Session::get('user_id'),
+        ]);
 
         notify()->success('Suppression effectuée avec succès !');
         return redirect()->route('chrono-depart.index');

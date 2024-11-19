@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -48,8 +48,6 @@ class AuthController extends Controller
             ->where('users.username', $request->username)
             ->first();
 
-            //$checkedUserPassword = Hash::check($request->password, $userExist->password);
-
             if($userExist->statut == 0) {
                 notify()->warning("Vos accès ont été bloqués, veuillez contacter l'administrateur svp !");
                 return back();
@@ -64,6 +62,7 @@ class AuthController extends Controller
                     'last_login_at' => $userExist->last_login_at,
                     'role_id' => $userExist->role_id,
                     'user_id' => $userExist->id,
+                    'agent_absent' => $userExist->letter_option
                 ]);
 
                 //Fetch user #Id
@@ -82,23 +81,18 @@ class AuthController extends Controller
                 ]);
 
                 switch ($userExist->role_id) {
-                    // case 5:
-                    //     smilify("success", "Bienvenue ".$userExist->names.", votre session est ouverte !!!");
-                    //     return redirect()->route('frontHomePage');
+                    case 2:
+                    case 3:
+                        smilify("success", "Bienvenue ".$userExist->full_name.", votre session est ouverte !!!");
+                        return redirect()->route('courrierHomePage');
 
-                    //     break;
+                        break;
 
-                    // case 4:
-                    //     smilify("success", "Bienvenue ".$userExist->names.", votre session est ouverte !!!");
-                    //     return redirect()->route('homePage');
+                    case 4:
+                        smilify("success", "Bienvenue ".$userExist->full_name.", votre session est ouverte !!!");
+                        return redirect()->route('courrierHomePage');
 
-                    //     break;
-
-                    // case 3:
-                    //     smilify("success", "Bienvenue ".$userExist->names.", votre session est ouverte !!!");
-                    //     return redirect()->route('frontHomePage');
-
-                    //     break;
+                        break;
 
                     default:
                         smilify("success", "Bienvenue ".$userExist->full_name.", votre session est ouverte !!!");
@@ -115,6 +109,13 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+
+        /********* Historique utilisateur *********/
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Déconnexion utilisateur',
+            'user_id' => Session::get('user_id'),
+        ]);
 
         $request->session()->invalidate();
 

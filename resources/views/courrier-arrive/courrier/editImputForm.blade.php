@@ -25,7 +25,7 @@
 
         <div class="row">
 
-            <div class="col-lg-5">
+            <div class="col-md-4">
                 <div class="white_card">
                     <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Courrier PDF</h4></div>
                     <div class="card-body">
@@ -45,7 +45,7 @@
 
             </div>
 
-            <div class="col-lg-3">
+            <div class="col-md-4">
                 <div class="white_card">
                     <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Information sur le courrier</h4></div>
 
@@ -71,7 +71,7 @@
 
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-md-4">
                 <div class="white_card">
                     <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Imputation</h4></div>
 
@@ -84,7 +84,7 @@
                                     <div class="col-sm-8">
                                         @foreach ($getDataDirection as $row)
                                             <div class="form-check d-inline-block me-4 mt-2">
-                                                <input type="checkbox" name="direction" value="{{ $row->id }} " class="form-check-input" id="{{ $row->id }}" <?php if(in_array($row->id, $dataItems)) echo "checked" ?> >
+                                                <input type="radio" name="direction" value="{{ $row->id }} " class="form-check-input" id="{{ $row->id }}" <?php if(in_array($row->id, $dataItems)) echo "checked" ?> >
                                                 <label class="form-label form-check-label" for="{{ $row->id }}">
                                                     <strong class="text-danger fw-bold">{{ $row->sigle }}</strong>
                                                 </label>

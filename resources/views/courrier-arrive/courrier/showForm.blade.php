@@ -22,12 +22,12 @@
 
     <div class="row">
 
-        <div class="col-lg-6">
+        <div class="col-md-4">
             <div class="white_card">
                 <div class="white_card_header border_bottom_1px d-flex">
                     <h4 class="card-title mb-0 me-auto">Courrier Pdf</h4>
-                    <a target="_blank" href="{{ asset('storage/'.$item->files) }}" type="button" class="btn rounded-pill btn-danger">
-                        <i class="ti-printer f_s_14 me-2"></i>Télécharger
+                    <a target="_blank" href="{{ asset('storage/'.$item->files) }}" type="button" class="btn rounded-pill btn-warning text-white">
+                        <i class="ti-printer f_s_14 me-2"></i>Imprimer le courrier
                     </a>
                 </div>
                 <div class="card-body">
@@ -48,7 +48,7 @@
 
         </div>
 
-        <div class="col-lg-3">
+        <div class="col-md-4">
             <div class="white_card">
                 <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Information sur le courrier</h4></div>
 
@@ -60,35 +60,59 @@
                                     <td>
                                         <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Chrono :</p>
                                     </td>
-                                    <td><h3 class="f_s_20 f_w_800 text-danger">{{ $item->numero }}</h3></td>
+                                    <td><h4 class="f_w_800 text-danger">{{ $item->numero }}</h4></td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Date d'arrivée :</p>
                                     </td>
-                                    <td><h5 class="f_s_16 f_w_600 text-primary">{{ date('d-m-Y', strtotime($item->date_add)) }}</h5></td>
+                                    <td><h4 class="f_w_600 text-primary">{{ date('d-m-Y', strtotime($item->date_add)) }}</h4></td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Numéro :</p>
                                     </td>
-                                    <td><h5 class="f_s_16 f_w_800 text-dark">{{ $item->number }}</h5></td>
+                                    <td><h4 class="f_w_800 text-dark">{{ $item->number }}</h4></td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Expéditeur :</p>
                                     </td>
-                                    <td><h5 class="f_s_16 f_w_800 text-dark">{{ $item->expeditor }}</h5></td>
+                                    <td><h4 class="f_w_800 text-dark">{{ $item->expeditor }}</h4></td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Objet :</p>
                                     </td>
-                                    <td><h5 class="f_s_16 f_w_600 text-dark">{{ $item->object }}</h5></td>
+                                    <td><h4 class="f_w_600 text-dark">{{ $item->object }}</h4></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Pièce jointe :</p>
+                                    </td>
+                                    <td><h4 class="f_w_600 text-dark">{{ $item->attachment }}</h4></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Courrier enregistré le :</p>
+                                    </td>
+                                    <td>
+                                        <h4 class="f_w_600 text-primary">{{ date('d-m-Y à H:i', strtotime($item->created_at)) }}</h4>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <p class="d-inline-block align-middle mb-0 product-name f_s_16 f_w_600 color_theme2">Par l'agent :</p>
+                                    </td>
+                                    <td><h4 class="f_w_600 text-dark">{{ $item->full_name }}</h4></td>
                                 </tr>
 
                             </tbody>
@@ -99,7 +123,7 @@
             </div>
         </div>
 
-        <div class="col-lg-3">
+        <div class="col-md-4">
             <div class="white_card">
                 <div class="white_card_header border_bottom_1px"><h4 class="card-title mb-0">Imputation</h4></div>
 

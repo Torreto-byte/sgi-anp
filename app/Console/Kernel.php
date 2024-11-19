@@ -22,22 +22,21 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
 
         $schedule->call(function () {
 
             // Exécute la requête pour récupérer les courriers et les données supplémentaires via les jointures
             $lettersData = Imputation::join('letters_ins', 'letters_ins.id', '=', 'imputations.letter_id')
                         ->join('directions', 'directions.id', '=', 'imputations.direction_id')
-                        //->join('users', 'users.id', '=', 'letters_ins.user_id'), 'users.id as user_id' // Joindre la table des utilisateurs
                         ->select('letters_ins.*', 'imputations.date_reception', 'directions.sigle')
                         ->where('letters_ins.code_instruction', 'repondre')
-                        ->where('imputations.date_reception', '<=', now()->subHours(48))
+                        ->whereNull('letters_ins.etat')
+                        ->where('imputations.date_reception', '<=', now()->subHours(72))
                         ->get();
 
 
             // Récupérer la liste des utilisateurs qui doivent recevoir la notif
-            $adminis = User::whereIn('role_id', [1])->get();
+            $adminis = User::whereIn('role_id', [1,2,3])->get();
 
 
             // Envoi de la notification

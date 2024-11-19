@@ -16,15 +16,24 @@
 
 <script src="{{ asset('vendors/owl_carousel/js/owl.carousel.min.js') }} "></script>
 
-<script src="{{ asset('vendors/datatable/js/jquery.dataTables.min.js') }} "></script>
+{{-- <script src="{{ asset('vendors/datatable/js/jquery.dataTables.min.js') }} "></script>
 <script src="{{ asset('vendors/datatable/js/dataTables.responsive.min.js') }} "></script>
-<script src="{{ asset('vendors/datatable/js/dataTables.buttons.min.js') }} "></script>
+<script src="{{ asset('vendors/datatable/js/dataTables.buttons.min.js') }} "></script> --}}
 <script src="{{ asset('vendors/datatable/js/buttons.flash.min.js') }} "></script>
 <script src="{{ asset('vendors/datatable/js/jszip.min.js') }} "></script>
 <script src="{{ asset('vendors/datatable/js/pdfmake.min.js') }} "></script>
 <script src="{{ asset('vendors/datatable/js/vfs_fonts.js') }} "></script>
 <script src="{{ asset('vendors/datatable/js/buttons.html5.min.js') }} "></script>
 <script src="{{ asset('vendors/datatable/js/buttons.print.min.js') }} "></script>
+
+<!--              Other dataTable                   --->
+<script src="{{ asset('vendors/datatables.net/jquery.dataTables.js')}}"></script>
+<script src="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.js')}}"></script>
+
+<!-- Custom dataTable -->
+<script src="{{ asset('js/data-table.js')}}"></script>
+<script src="{{ asset('js/dataTables.select.min.js')}}"></script>
+<!-- End custom dataTable-->
 
 <script src="{{ asset('vendors/datepicker/datepicker.js') }} "></script>
 <script src="{{ asset('vendors/datepicker/datepicker.en.js') }} "></script>

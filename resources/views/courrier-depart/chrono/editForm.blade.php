@@ -33,7 +33,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label text-bold fs-5 text-red-600" for="inputEmail4">Numéro du chrono</label>
-                                    <input type="text" name="numero" value="{{ $singleData->numero }}" class="form-control @error('numero') is-invalid @enderror" id="inputEmail4" placeholder="Exemple:. N°02 ">
+                                    <input type="text" name="numero" value="{{ $singleData->numero }}" class="form-control @error('numero') is-invalid @enderror" id="inputEmail4" readonly>
                                     @error('numero')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
@@ -41,16 +41,16 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label" for="inputEmail4">Début</label>
-                                    <input type="text" name="debut" value="{{ $singleData->num_debut }}" class="form-control @error('debut') is-invalid @enderror" id="inputEmail4">
-                                    @error('debut')
+                                    <label class="form-label" for="inputEmail4">fin</label>
+                                    <input type="text" name="fin" class="form-control @error('fin') is-invalid @enderror" id="inputEmail4">
+                                    @error('fin')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-info">Modifier</button>
-                            <a href="{{ route('chrono-depart.index') }}" class="btn btn-danger ms-5">Annuler</a>
+                            <button type="submit" class="btn btn-danger text-white me-5">Fermer ce chrono</button>
+                            <a href="{{ route('chrono-depart.index') }}" class="btn btn-info ms-5">Annuler</a>
                         </form>
                     </div>
                 </div>

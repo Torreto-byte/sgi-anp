@@ -18,9 +18,13 @@
 
 <link rel="stylesheet" href="{{ asset('vendors/scroll/scrollable.css') }}" />
 
-<link rel="stylesheet" href="{{ asset('vendors/datatable/css/jquery.dataTables.min.css') }}" />
+{{-- <link rel="stylesheet" href="{{ asset('vendors/datatable/css/jquery.dataTables.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('vendors/datatable/css/responsive.dataTables.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('vendors/datatable/css/buttons.dataTables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('vendors/datatable/css/buttons.dataTables.min.css') }}" /> --}}
+
+<!--         Other DataTable               -->
+<link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs4/dataTables.bootstrap4.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ asset('js/select.dataTables.min.css')}}">
 
 <link rel="stylesheet" href="{{ asset('vendors/text_editor/summernote-bs4.css') }}" />
 

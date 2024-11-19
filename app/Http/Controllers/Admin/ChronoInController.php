@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\ChronoIn;
+use App\Models\UserHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class ChronoInController extends Controller
@@ -50,36 +52,30 @@ class ChronoInController extends Controller
             return back()->withErrors($validate)->withInput();
         }
 
+        if (ChronoIn::where('numero', $request->numero.'-'.date('Y'))->exists()) {
+            notify()->error('Ce numéro de chrono existe déjà !');
+            return back()->withErrors($validate)->withInput();
+        }
+
         $newData = new ChronoIn();
 
-        $newData->numero        = $request->numero;
+        $newData->numero        = $request->numero.'-'.date('Y');
         $newData->num_debut     = $request->debut;
-        $newData->num_fin       = $request->fin;
 
         if ($newData->save()) {
 
             /********* Historique utilisateur *********/
-            // History::create([
-            //     'names' => Session::get('names'),
-            //     'operations' => 'Enregistrement Production ==> '.$request->libele,
-            //     'users_id' => Session::get('users_id'),
-            // ]);
+            UserHistory::create([
+                'names' => Session::get('names'),
+                'operations' => 'Création du chrono arrivé N° ==> '.$request->numero.'-'.date('Y'),
+                'user_id' => Session::get('user_id'),
+            ]);
 
             notify()->success('Enregistrement effectué avec succès !');
             return redirect()->route('chrono-arrive.index');
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -121,11 +117,11 @@ class ChronoInController extends Controller
         if ($singleData->save()) {
 
             /********* Historique utilisateur *********/
-            // History::create([
-            //     'names' => Session::get('names'),
-            //     'operations' => 'Enregistrement Production ==> '.$request->libele,
-            //     'users_id' => Session::get('users_id'),
-            // ]);
+            UserHistory::create([
+                'names' => Session::get('names'),
+                'operations' => 'Fermeture du chrono arrivé N° ==> '.$request->numero.'-'.date('Y'),
+                'user_id' => Session::get('user_id'),
+            ]);
 
             notify()->success('Chrono fermé avec succès !');
             return redirect()->route('chrono-arrive.index');
@@ -141,6 +137,12 @@ class ChronoInController extends Controller
     public function destroy($id)
     {
         ChronoIn::destroy($id);
+
+        UserHistory::create([
+            'names' => Session::get('names'),
+            'operations' => 'Suppression du chrono N° ==> '.$id,
+            'user_id' => Session::get('user_id'),
+        ]);
 
         notify()->success('Suppression effectuée avec succès !');
         return redirect()->route('chrono-arrive.index');
